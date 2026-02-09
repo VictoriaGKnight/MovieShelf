@@ -1,6 +1,19 @@
 import { Link } from 'react-router-dom';
+import { useState } from "react";
 
-function Header() {
+function Header({ onSearch }) {
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearchClick = () => {
+    onSearch(searchQuery);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      onSearch(searchQuery);
+    }
+  };
+
   return (
     <header className="header">
       <div className="header-content">
@@ -9,13 +22,17 @@ function Header() {
           <Link to="/" className="nav-link">Home</Link>
           <Link to="/favorites" className="nav-link">Favorites</Link>
         </nav>
+
         <div className="search-container">
           <input 
             type="text" 
             placeholder="Search movies..."
             className="search-input"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={handleKeyDown}
           />
-          <button className="search-button">Search</button>
+          <button className="search-button" onClick={handleSearchClick}>Search</button>
         </div>
       </div>
     </header>
