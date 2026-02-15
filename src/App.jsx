@@ -2,15 +2,15 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Home from './pages/Home';
 import Favorites from './pages/Favorites';
+import Watchlist from './pages/Watchlist';
 import './App.css';
 import { useState } from "react";
 import { searchMovies } from "./services/movieService";
+import { MovieProvider } from './contexts/MovieContext';
 
 function App() {
-  // 1) Search results state lives in App (so Header + Home can both use it)
   const [searchResults, setSearchResults] = useState(null);
 
-  // 2) Handler function that calls your service + stores results in state
   const handleSearch = async (query) => {
     if (!query.trim()) return;
 
@@ -19,23 +19,24 @@ function App() {
       setSearchResults(results);
     } catch (error) {
       console.warn("Search failed:", error);
-      setSearchResults([]); // optional: show empty results instead of crashing
+      setSearchResults([]); 
     }
   };
 
   return (
-    <Router>
-      <div className="app">
-        {/* 3) Pass the function down to Header */}
-        <Header onSearch={handleSearch} />
+    <MovieProvider>
+      <Router>
+        <div className="app">
+          <Header onSearch={handleSearch} />
 
-        <Routes>
-          {/* 4) Pass the results down to Home */}
-          <Route path="/" element={<Home searchResults={searchResults} />} />
-          <Route path="/favorites" element={<Favorites />} />
-        </Routes>
-      </div>
-    </Router>
+          <Routes>
+            <Route path="/" element={<Home searchResults={searchResults} />} />
+            <Route path="/favorites" element={<Favorites />} />
+            <Route path="/watchlist" element={<Watchlist />} /> 
+          </Routes>
+        </div>
+      </Router>
+    </MovieProvider>
   );
 }
 

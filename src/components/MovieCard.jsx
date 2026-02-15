@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useMovieContext } from "../contexts/MovieContext";
+
 
 function MovieCard({ movie }) {
   const POSTER_BASE_URL = "https://image.tmdb.org/t/p/w500";
@@ -27,6 +29,8 @@ function MovieCard({ movie }) {
     }
   };
 
+  const { addToWatchlist, removeFromWatchlist, isInWatchlist } = useMovieContext();
+  const inWatchlist = isInWatchlist(movie.id);
 
   const posterUrl = movie.poster_path
     ? `${POSTER_BASE_URL}${movie.poster_path}`
@@ -47,9 +51,17 @@ function MovieCard({ movie }) {
           <span className="movie-rating">⭐ {movie.vote_average}</span>
           <span className="movie-year">{movie.release_date.substring(0, 4)}</span>
         </div>
-        <button className="favorite-button" onClick={toggleFavorite}>
-          {isFavorite ? "♥ Remove from Favorites" : "♡ Add to Favorites"}
-        </button>
+        <div className="card-buttons">
+          <button className="favorite-button" onClick={toggleFavorite}>
+            {isFavorite ? "♥ Remove from Favorites" : "♡ Add to Favorites"}
+          </button>
+          <button
+            className="watchlist-button"
+            onClick={() => (inWatchlist ? removeFromWatchlist(movie.id) : addToWatchlist(movie))}
+          >
+            {inWatchlist ? "− Remove from Watchlist" : "+ Add to Watchlist"}
+          </button>
+        </div>
       </div>
     </div>
   );
